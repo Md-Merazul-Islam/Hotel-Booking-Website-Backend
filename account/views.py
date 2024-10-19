@@ -80,6 +80,8 @@ def activate(request, uid64, token):
         return redirect('verified_unsuccess')
 
 
+
+
 class UserLoginApiView(APIView):
     def post(self, request):
         serializer = UserLoginSerializer(data=self.request.data)
@@ -93,12 +95,16 @@ class UserLoginApiView(APIView):
             if user:
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
-                print(token, _)
-                # login(request, user)
-                return Response({'token': token.key, 'user_id': user.id})
+                
+                # Add the is_staff field to the response
+                return Response({
+                    'token': token.key,
+                    'user_id': user.id,
+                    'is_staff': user.is_staff, 
+                })
             else:
-                return Response({'error': 'Invalid Credentials'})
-        return Response(serializer.errors)
+                return Response({'error': 'Invalid Credentials'}, status=400)
+        return Response(serializer.errors, status=400)
 
 
 class UserLogoutApiView(APIView):
