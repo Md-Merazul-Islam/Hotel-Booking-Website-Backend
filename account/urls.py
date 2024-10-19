@@ -8,7 +8,7 @@ from . import views
 router = DefaultRouter()
 router.register('account', views.UserAccountViewSet, basename='user-account')
 router.register('allUser', views.AllUserViewSet)
-router.register('user-status', views.UserViewSet, basename='is_users_staff')
+router.register('is_users_staff', views.UserViewSet, basename='is_users_staff')
 router.register('admin-messages', views.AdminMessageViewSet)
 
 urlpatterns = [
