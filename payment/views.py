@@ -89,7 +89,7 @@ class PaymentSerializer(serializers.Serializer):
                     'total_amount': total_cost,
                     'currency': "BDT",
                     'tran_id': transaction_id,
-                    'success_url': 'https://hotel-booking-website-backend.vercel.app/payment/success/',
+                    'success_url': 'https://hotel-booking-website-backend.vercel.app/payment/success/', # slashe
                     'fail_url': 'https://hotel-booking-website-backend.vercel.app/payment/fail/',
                     'cancel_url': 'https://hotel-booking-website-backend.vercel.app/payment/cancel/',
                     'emi_option': 0,
