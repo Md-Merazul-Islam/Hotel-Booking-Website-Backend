@@ -19,7 +19,7 @@ class District(models.Model):
 class Hotel(models.Model):
     name = models.CharField(max_length=100)
     address = models.TextField()
-    photo = models.ImageField(upload_to='hotels/images')
+    photo = models.TextField( blank=True, null=True)
     description = models.TextField()
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
     available_room = models.IntegerField(default=0)

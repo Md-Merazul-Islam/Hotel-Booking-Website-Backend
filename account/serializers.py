@@ -108,7 +108,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     account_no = serializers.IntegerField(source='account.account_no', read_only=True)
     balance = serializers.DecimalField(source='account.balance', max_digits=12, decimal_places=2)
-    profile_image = serializers.ImageField(source='account.profile_image', allow_null=True, required=False)
+    profile_image = serializers.CharField(source='account.profile_image', allow_null=True, required=False)
 
     class Meta:
         model = User
