@@ -132,14 +132,18 @@ class AdminMessageSerializer(serializers.ModelSerializer):
         model = AdminMessage
         fields = '__all__'
         
-   
-
 class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'is_staff']  
+
+class UserStaffSerializer(serializers.ModelSerializer):
     user_permissions = serializers.PrimaryKeyRelatedField(
         queryset=Permission.objects.all(),
         many=True,
         required=False
     )
+
     class Meta:
         model = User
         fields = ['id', 'username', 'is_staff', 'is_superuser', 'user_permissions']
@@ -154,3 +158,5 @@ class UserSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+    
+    

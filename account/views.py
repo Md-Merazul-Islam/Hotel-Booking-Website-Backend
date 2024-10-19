@@ -18,7 +18,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics
 from .permissions import IsAdminOrReadOnly 
 from rest_framework import viewsets
-from . serializers import UserAccountSerializer, UserRegistrationSerializer, UserLoginSerializer, AllUserSerializer, DepositSerializer,UserSerializer,AdminMessageSerializer
+from . serializers import UserAccountSerializer, UserRegistrationSerializer, UserLoginSerializer, AllUserSerializer, DepositSerializer,UserSerializer,AdminMessageSerializer,UserStaffSerializer
 from rest_framework.permissions import IsAdminUser
 
 
@@ -157,10 +157,20 @@ class AdminMessageViewSet(viewsets.ModelViewSet):
             return AdminMessage.objects.all()
         return AdminMessage.objects.filter(user=user)
     
+
     
-    
-    
+#only change staff permission
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes=[IsAdminOrReadOnly]
+    
+
+
+
+
+#change super user , staff all 
+class UserStaffViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserStaffSerializer
     permission_classes = [IsAdminUser]
