@@ -11,7 +11,6 @@ from .views import (
 
 router.register('review_add',ReviewViewSet)
 
-
 urlpatterns = [
     path('', include(router.urls)),
     path('districts/', DistrictListAPIView.as_view(), name='district-list'),
