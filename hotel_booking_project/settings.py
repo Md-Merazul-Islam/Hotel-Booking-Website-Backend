@@ -5,7 +5,7 @@ import os
 env = environ.Env()
 environ.Env.read_env()
 SECRET_KEY = env("SECRET_KEY")
-APPEND_SLASH = False  # this is for payment gateway error
+APPEND_SLASH = True  # this is for payment gateway error
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = True
@@ -80,6 +80,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+          "rest_framework.authentication.SessionAuthentication",
+        
     ],
 }
 

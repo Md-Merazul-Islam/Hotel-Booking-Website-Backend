@@ -7,7 +7,6 @@ from . models import UserAccount,AdminMessage
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils.encoding import force_bytes
-from . serializers import UserAccountSerializer, UserRegistrationSerializer, UserLoginSerializer, AllUserSerializer, DepositSerializer,UserSerializer,AdminMessageSerializer
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth import authenticate, login, logout
@@ -19,7 +18,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics
 from .permissions import IsAdminOrReadOnly 
 from rest_framework import viewsets
-
+from . serializers import UserAccountSerializer, UserRegistrationSerializer, UserLoginSerializer, AllUserSerializer, DepositSerializer,UserSerializer,AdminMessageSerializer
+from rest_framework.permissions import IsAdminUser
 
 
 class AllUserViewSet(viewsets.ModelViewSet):
@@ -135,10 +135,6 @@ class DepositViewSet(APIView):
             return Response(serializer.errors)
         
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes=[IsAdminOrReadOnly]
 
 
 class UserDetailView(generics.RetrieveUpdateAPIView):
@@ -160,3 +156,11 @@ class AdminMessageViewSet(viewsets.ModelViewSet):
         if user.is_staff or user.is_superuser:
             return AdminMessage.objects.all()
         return AdminMessage.objects.filter(user=user)
+    
+    
+    
+    
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]

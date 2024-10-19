@@ -11,3 +11,13 @@ Store Password (API/Secret Key): bookh668dde6d76e0c@ssl
 SUper base : uru84yX@4cMfCcF
 
 
+{
+  "username":"amiadmin22",
+  "password":"admin1234"
+}
+
+{
+  "username":"admin",
+  "password":"meraz1234"
+}
+

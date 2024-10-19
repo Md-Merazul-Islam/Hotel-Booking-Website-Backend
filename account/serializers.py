@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Transaction, UserAccount,AdminMessage
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 
 
 class UserAccountSerializer(serializers.ModelSerializer):
@@ -99,10 +99,6 @@ class DepositSerializer(serializers.ModelSerializer):
 
         return transaction
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'is_staff']  
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -136,3 +132,25 @@ class AdminMessageSerializer(serializers.ModelSerializer):
         model = AdminMessage
         fields = '__all__'
         
+   
+
+class UserSerializer(serializers.ModelSerializer):
+    user_permissions = serializers.PrimaryKeyRelatedField(
+        queryset=Permission.objects.all(),
+        many=True,
+        required=False
+    )
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'is_staff', 'is_superuser', 'user_permissions']
+
+    def update(self, instance, validated_data):
+        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
+        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+
+        permissions = validated_data.get('user_permissions', None)
+        if permissions is not None:
+            instance.user_permissions.set(permissions)
+
+        instance.save()
+        return instance
