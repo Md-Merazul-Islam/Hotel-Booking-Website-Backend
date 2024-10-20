@@ -20,3 +20,6 @@ SUper base : uru84yX@4cMfCcF
 staf user :
  name : manager
 password: manager2004
+
+
+hotel/names/

@@ -132,3 +132,11 @@ class AllBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = ['id', 'hotel', 'start_date', 'end_date', 'number_of_rooms', 'booked_at', 'user']
+
+
+
+class AllHotelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hotel
+        fields = ['id', 'name']
+        

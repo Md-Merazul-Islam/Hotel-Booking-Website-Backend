@@ -6,7 +6,7 @@ from .views import (
     DistrictListAPIView, DistrictDetailAPIView,
     HotelListAPIView, HotelDetailAPIView,
     AllReviewsListAPIView,
-    download_booking_pdf,BookHotelView,ReviewViewSet,AllBookingsListAPIView
+    download_booking_pdf,BookHotelView,ReviewViewSet,AllBookingsListAPIView,HotelNameListView
 )
 
 router.register('review_add',ReviewViewSet)
@@ -21,6 +21,7 @@ urlpatterns = [
     path('reviews/', AllReviewsListAPIView.as_view(), name='all-reviews-list'),
     path('book/', BookHotelView.as_view(), name='book_hotel'),
     path('bookings/', AllBookingsListAPIView.as_view(), name='all-bookings-list'),
+     path('names/', HotelNameListView.as_view(), name='hotel-name-list'),
     
     
 ]

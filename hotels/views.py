@@ -40,13 +40,6 @@ class HotelFilter(filters.FilterSet):
         fields = ['district_name', 'name']
 
 
-# class HotelListAPIView(generics.ListCreateAPIView):
-#     queryset = Hotel.objects.all()
-#     serializer_class = HotelSerializer
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_class = HotelFilter
-#     permission_classes=[IsAdminOrReadOnly]
-
 
 class CustomPagination(PageNumberPagination):
     page_size = 6  
@@ -68,11 +61,6 @@ class HotelListAPIView(generics.ListCreateAPIView):
             return filtered_queryset
         return queryset
     
-
-
-
-
-
 
 class HotelDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Hotel.objects.all()
@@ -155,3 +143,9 @@ class AllBookingsListAPIView(generics.ListAPIView):
     queryset = Booking.objects.all()
     serializer_class = AllBookingSerializer
     permission_classes = [IsAdminOrReadOnly]
+
+
+from .serializers import AllHotelSerializer
+class HotelNameListView(generics.ListAPIView):
+    queryset = Hotel.objects.all()
+    serializer_class = AllHotelSerializer
