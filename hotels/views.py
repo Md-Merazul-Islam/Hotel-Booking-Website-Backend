@@ -145,10 +145,11 @@ class AllReviewsListAPIView(generics.ListAPIView):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
+    queryset = Review.objects.select_related('hotel', 'user').all()
     serializer_class = ReviewSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['hotel_id']
+
 
 
 
