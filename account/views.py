@@ -164,24 +164,27 @@ class AdminMessageViewSet(viewsets.ModelViewSet):
         return AdminMessage.objects.filter(user=user)
     
 
-from rest_framework.pagination import PageNumberPagination
-class CustomPagination(PageNumberPagination):
-    page_size = 6  
-    page_size_query_param = 'page_size'
-    max_page_size = 100
     
 #only change staff permission
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes=[IsAdminOrReadOnly]
-    pagination_class = CustomPagination 
+    
 
 
 
 
+from rest_framework.pagination import PageNumberPagination
+
+class CustomPagination(PageNumberPagination):
+    page_size = 6  
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+    
 class UserStaffViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserStaffSerializer
     permission_classes = [IsAdminUser]
     pagination_class = CustomPagination 
+
