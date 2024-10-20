@@ -158,8 +158,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 #         instance.save()
 #         return instance
-    
-    
+
+
+
 class UserStaffSerializer(serializers.ModelSerializer):
     user_permissions = serializers.PrimaryKeyRelatedField(
         queryset=Permission.objects.all(),
@@ -172,16 +173,20 @@ class UserStaffSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'is_staff', 'is_superuser', 'user_permissions']
 
     def update(self, instance, validated_data):
-        # Use instance.update() for fields that are direct attributes
+        # Only update fields if they are present in validated_data
         fields_to_update = ['is_staff', 'is_superuser']
         for field in fields_to_update:
             if field in validated_data:
                 setattr(instance, field, validated_data[field])
 
-        # Efficiently set permissions only if provided
+        # Update permissions if provided
         if 'user_permissions' in validated_data:
             instance.user_permissions.set(validated_data['user_permissions'])
 
-        # Save changes after updating the instance
-        instance.save()
+        # Save the instance
+        try:
+            instance.save()
+        except Exception as e:
+            raise serializers.ValidationError({"detail": f"An error occurred while updating the user: {str(e)}"})
+
         return instance

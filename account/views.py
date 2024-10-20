@@ -174,9 +174,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 
+from rest_framework.pagination import LimitOffsetPagination
 
-#change super user , staff all 
 class UserStaffViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserStaffSerializer
     permission_classes = [IsAdminUser]
+
+    # Add pagination to limit results if needed
+    pagination_class = LimitOffsetPagination  # Example for limiting the number of users returned
+
+    def get_queryset(self):
+        # Optimize the queryset to fetch only the necessary fields
+        return User.objects.only('id', 'username', 'is_staff', 'is_superuser').prefetch_related('user_permissions')
