@@ -48,8 +48,24 @@ class HotelFilter(filters.FilterSet):
 #     permission_classes=[IsAdminOrReadOnly]
 
 
+# class CustomPagination(PageNumberPagination):
+#     page_size = 6  
+#     page_size_query_param = 'page_size'
+#     max_page_size = 100
+
+# class HotelListAPIView(generics.ListCreateAPIView):
+#     queryset = Hotel.objects.select_related('district').all()
+#     serializer_class = HotelSerializer
+#     filter_backends = [DjangoFilterBackend]
+#     filterset_class = HotelFilter
+#     permission_classes = [IsAdminOrReadOnly]
+#     pagination_class = CustomPagination 
+
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+
 class CustomPagination(PageNumberPagination):
-    page_size = 6  
+    page_size = 6
     page_size_query_param = 'page_size'
     max_page_size = 100
 
@@ -59,7 +75,20 @@ class HotelListAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = HotelFilter
     permission_classes = [IsAdminOrReadOnly]
-    pagination_class = CustomPagination 
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        filtered_queryset = self.filter_queryset(queryset)
+        if self.request.query_params:
+            return filtered_queryset
+        return queryset
+
+    def paginate_queryset(self, queryset):
+        if self.request.query_params:
+            return None  
+        return super().paginate_queryset(queryset)
+
 
 
 
