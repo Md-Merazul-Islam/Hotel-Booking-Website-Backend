@@ -14,14 +14,11 @@ class DistrictSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class HotelSerializer(serializers.ModelSerializer):
-    district_name = serializers.SerializerMethodField()
-
-    def get_district_name(self, obj):
-        return obj.district.district_name if obj.district else None
+    district_name = serializers.CharField(source='district.district_name', read_only=True) 
 
     class Meta:
         model = Hotel
-        fields = ['id','name','address','district_name',  'district','photo','address','description','price_per_night','available_room']
+        fields = ['id', 'name', 'address', 'district_name', 'district', 'photo', 'description', 'price_per_night', 'available_room']
 
 
 class ReviewSerializer(serializers.ModelSerializer):

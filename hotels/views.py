@@ -16,6 +16,7 @@ from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAdminOrReadOnly 
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
 
 class DistrictListAPIView(generics.ListCreateAPIView):
@@ -39,12 +40,27 @@ class HotelFilter(filters.FilterSet):
         fields = ['district_name', 'name']
 
 
+# class HotelListAPIView(generics.ListCreateAPIView):
+#     queryset = Hotel.objects.all()
+#     serializer_class = HotelSerializer
+#     filter_backends = [DjangoFilterBackend]
+#     filterset_class = HotelFilter
+#     permission_classes=[IsAdminOrReadOnly]
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 6  
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class HotelListAPIView(generics.ListCreateAPIView):
-    queryset = Hotel.objects.all()
+    queryset = Hotel.objects.select_related('district').all()
     serializer_class = HotelSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = HotelFilter
-    permission_classes=[IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
+    pagination_class = CustomPagination 
+
 
 
 class HotelDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
