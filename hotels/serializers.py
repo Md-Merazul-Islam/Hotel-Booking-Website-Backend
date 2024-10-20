@@ -32,7 +32,7 @@ class ReviewSerializerAll(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, obj):
-        return obj.user.username if obj.user else None
+        return obj.user.username if obj.user else 'Anonymous'
     
     class Meta:
         model = Review

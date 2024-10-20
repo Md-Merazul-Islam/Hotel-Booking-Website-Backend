@@ -60,9 +60,16 @@ class HotelFilter(filters.FilterSet):
 #     filterset_class = HotelFilter
 #     permission_classes = [IsAdminOrReadOnly]
 #     pagination_class = CustomPagination 
-
-from rest_framework.pagination import PageNumberPagination
-from django_filters.rest_framework import DjangoFilterBackend
+    
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         filtered_queryset = self.filter_queryset(queryset)
+#         if self.request.query_params:
+#             return filtered_queryset
+#         return queryset
+    
+# from rest_framework.pagination import PageNumberPagination
+# from django_filters.rest_framework import DjangoFilterBackend
 
 class CustomPagination(PageNumberPagination):
     page_size = 6
@@ -84,10 +91,11 @@ class HotelListAPIView(generics.ListCreateAPIView):
             return filtered_queryset
         return queryset
 
-    def paginate_queryset(self, queryset):
-        if self.request.query_params:
-            return None  
-        return super().paginate_queryset(queryset)
+#     def paginate_queryset(self, queryset):
+#         if self.request.query_params:
+#             return super().paginate_queryset(queryset)  # Always paginate when params are present
+#         return None  # If you want to skip pagination, ensure your frontend handles non-paginated data properly
+
 
 
 
