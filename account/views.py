@@ -164,26 +164,24 @@ class AdminMessageViewSet(viewsets.ModelViewSet):
         return AdminMessage.objects.filter(user=user)
     
 
+from rest_framework.pagination import PageNumberPagination
     
 #only change staff permission
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes=[IsAdminOrReadOnly]
+    pagination_class = CustomPagination 
+
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 6  
+    page_size_query_param = 'page_size'
+    max_page_size = 100
     
-
-
-
-from rest_framework.pagination import LimitOffsetPagination
-
 class UserStaffViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserStaffSerializer
     permission_classes = [IsAdminUser]
-
-    # Add pagination to limit results if needed
-    pagination_class = LimitOffsetPagination  # Example for limiting the number of users returned
-
-    def get_queryset(self):
-        # Optimize the queryset to fetch only the necessary fields
-        return User.objects.only('id', 'username', 'is_staff', 'is_superuser').prefetch_related('user_permissions')
+    pagination_class = CustomPagination 
