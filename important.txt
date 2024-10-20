@@ -4,9 +4,9 @@ password : meraz1234
 Store ID: bookh668dde6d76e0c
 Store Password (API/Secret Key): bookh668dde6d76e0c@ssl
 
+https://blueskybooking.onrender.com
 
-
-
+https://hotel-booking-website-backend.vercel.app/user/is_users_staff/
 
 SUper base : uru84yX@4cMfCcF
 

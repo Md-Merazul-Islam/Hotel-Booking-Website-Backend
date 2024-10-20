@@ -137,6 +137,29 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'is_staff']  
 
+# class UserStaffSerializer(serializers.ModelSerializer):
+#     user_permissions = serializers.PrimaryKeyRelatedField(
+#         queryset=Permission.objects.all(),
+#         many=True,
+#         required=False
+#     )
+
+#     class Meta:
+#         model = User
+#         fields = ['id', 'username', 'is_staff', 'is_superuser', 'user_permissions']
+
+#     def update(self, instance, validated_data):
+#         instance.is_staff = validated_data.get('is_staff', instance.is_staff)
+#         instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+
+#         permissions = validated_data.get('user_permissions', None)
+#         if permissions is not None:
+#             instance.user_permissions.set(permissions)
+
+#         instance.save()
+#         return instance
+    
+    
 class UserStaffSerializer(serializers.ModelSerializer):
     user_permissions = serializers.PrimaryKeyRelatedField(
         queryset=Permission.objects.all(),
@@ -149,14 +172,16 @@ class UserStaffSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'is_staff', 'is_superuser', 'user_permissions']
 
     def update(self, instance, validated_data):
-        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
-        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+        # Use instance.update() for fields that are direct attributes
+        fields_to_update = ['is_staff', 'is_superuser']
+        for field in fields_to_update:
+            if field in validated_data:
+                setattr(instance, field, validated_data[field])
 
-        permissions = validated_data.get('user_permissions', None)
-        if permissions is not None:
-            instance.user_permissions.set(permissions)
+        # Efficiently set permissions only if provided
+        if 'user_permissions' in validated_data:
+            instance.user_permissions.set(validated_data['user_permissions'])
 
+        # Save changes after updating the instance
         instance.save()
         return instance
-    
-    
