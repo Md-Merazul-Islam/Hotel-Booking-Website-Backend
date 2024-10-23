@@ -120,7 +120,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
     # filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['hotel_id']
 
-
+    def get_queryset(self):
+        queryset = Review.objects.all()
+        hotel_id = self.request.query_params.get('hotel_id', None)
+        if hotel_id is not None:
+            queryset = queryset.filter(hotel_id=hotel_id)
+        return queryset
 
 
 class BookHotelView(APIView):
