@@ -120,18 +120,27 @@ class AllReviewsListAPIView(generics.ListAPIView):
 #     filter_backends = [DjangoFilterBackend]
 #     filterset_fields = ['hotel_id']
 
-
+from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
+from .models import Review
+from .serializers import ReviewSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
+class CustomPagination(PageNumberPagination):
+    page_size = 7  # Limit to 10 reviews per page
+    page_size_query_param = 'page_size'
+    max_page_size = 20
+
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.select_related('hotel', 'user').order_by('-created')
+    queryset = Review.objects.select_related('hotel', 'user').order_by('-created')[:500]  # Limit to 500 most recent
     serializer_class = ReviewSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['hotel_id']
     pagination_class = CustomPagination
 
-    @method_decorator(cache_page(60 * 15))  
+    @method_decorator(cache_page(60 * 15))  # Cache the list view for 15 minutes
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
