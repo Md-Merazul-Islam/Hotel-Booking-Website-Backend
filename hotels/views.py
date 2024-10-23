@@ -127,27 +127,24 @@ from .models import Review
 from .serializers import ReviewSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
-# Optional: Custom pagination class
+# Custom pagination class
 class CustomPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 3  # Number of reviews per page
     page_size_query_param = 'page_size'  
-    max_page_size = 100 
+    max_page_size = 100  
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.select_related('hotel', 'user').order_by('-created').all()
+    queryset = Review.objects.select_related('hotel', 'user').order_by('-created')
     serializer_class = ReviewSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['hotel_id']
-    pagination_class = CustomPagination 
+    pagination_class = CustomPagination
 
-    def create(self, request, *args, **kwargs):
-        user = request.user
-        hotel_id = request.data.get('hotel')
+    # Optional optimization if you need to prevent unnecessary large queries
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset[:10]  # Fetch only the latest 1000 reviews as an example
 
-        if Review.objects.filter(user=user, hotel_id=hotel_id).exists():
-            raise ValidationError('You have already reviewed this hotel.')
-
-        return super().create(request, *args, **kwargs)
 
 
 class BookHotelView(APIView):
