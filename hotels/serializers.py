@@ -24,7 +24,8 @@ class HotelSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = [ 'body',  'rating', 'hotel', 'user']
+        
         
         
 class ReviewSerializerAll(serializers.ModelSerializer):
