@@ -129,12 +129,12 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
 class CustomPagination(PageNumberPagination):
-    page_size = 7  # Limit to 10 reviews per page
+    page_size = 2  # Limit to 10 reviews per page
     page_size_query_param = 'page_size'
     max_page_size = 20
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.select_related('hotel', 'user').order_by('-created')[:500]  # Limit to 500 most recent
+    queryset = Review.objects.select_related('hotel', 'user').order_by('-created')[:5] 
     serializer_class = ReviewSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['hotel_id']
