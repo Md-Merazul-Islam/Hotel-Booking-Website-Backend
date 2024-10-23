@@ -17,7 +17,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAdminOrReadOnly 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
-
+from rest_framework.exceptions import ValidationError
 
 class DistrictListAPIView(generics.ListCreateAPIView):
     queryset = District.objects.all()
@@ -120,8 +120,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['hotel_id']
 
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        hotel_id = request.data.get('hotel')
+        if Review.objects.filter(user=user, hotel_id=hotel_id).exists():
+            raise ValidationError('You have already reviewed this hotel.')
 
-
+        return super().create(request, *args, **kwargs)
 
 class BookHotelView(APIView):
     def post(self, request):
