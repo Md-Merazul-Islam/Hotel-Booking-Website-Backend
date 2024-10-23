@@ -17,7 +17,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAdminOrReadOnly 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.exceptions import ValidationError
+
 
 class DistrictListAPIView(generics.ListCreateAPIView):
     queryset = District.objects.all()
@@ -114,19 +114,41 @@ class AllReviewsListAPIView(generics.ListAPIView):
     serializer_class = ReviewSerializerAll
 
 
+# class ReviewViewSet(viewsets.ModelViewSet):
+#     queryset = Review.objects.select_related('hotel', 'user').all()
+#     serializer_class = ReviewSerializer
+#     filter_backends = [DjangoFilterBackend]
+#     filterset_fields = ['hotel_id']
+
+
+from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
+from .models import Review
+from .serializers import ReviewSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+
+# Optional: Custom pagination class
+class CustomPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = 'page_size'  
+    max_page_size = 100 
+
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.select_related('hotel', 'user').all()
+    queryset = Review.objects.select_related('hotel', 'user').order_by('-created').all()
     serializer_class = ReviewSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['hotel_id']
+    pagination_class = CustomPagination 
 
     def create(self, request, *args, **kwargs):
         user = request.user
         hotel_id = request.data.get('hotel')
+
         if Review.objects.filter(user=user, hotel_id=hotel_id).exists():
             raise ValidationError('You have already reviewed this hotel.')
 
         return super().create(request, *args, **kwargs)
+
 
 class BookHotelView(APIView):
     def post(self, request):
