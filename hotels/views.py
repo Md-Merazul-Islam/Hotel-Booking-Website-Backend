@@ -121,17 +121,8 @@ class AllReviewsListAPIView(generics.ListAPIView):
 #     filterset_fields = ['hotel_id']
 
 
-from rest_framework import viewsets
-from rest_framework.pagination import PageNumberPagination
-from .models import Review
-from .serializers import ReviewSerializer
-from django_filters.rest_framework import DjangoFilterBackend
-
-# Custom pagination class
-class CustomPagination(PageNumberPagination):
-    page_size = 3  # Number of reviews per page
-    page_size_query_param = 'page_size'  
-    max_page_size = 100  
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.select_related('hotel', 'user').order_by('-created')
@@ -140,10 +131,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     filterset_fields = ['hotel_id']
     pagination_class = CustomPagination
 
-    # Optional optimization if you need to prevent unnecessary large queries
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset[:10]  # Fetch only the latest 1000 reviews as an example
+    @method_decorator(cache_page(60 * 15))  
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 
 
