@@ -1,3 +1,4 @@
+from .serializers import AllHotelSerializer
 from rest_framework import viewsets
 from rest_framework import generics
 from .serializers import BookingSerializer
@@ -11,10 +12,10 @@ from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Hotel, District, Review, Booking
-from .serializers import HotelSerializer, ReviewSerializerAll, DistrictSerializer, BookingSerializer,ReviewSerializer,AllBookingSerializer
+from .serializers import HotelSerializer, ReviewSerializerAll, DistrictSerializer, BookingSerializer, ReviewSerializer, AllBookingSerializer
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .permissions import IsAdminOrReadOnly 
+from .permissions import IsAdminOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 
@@ -22,7 +23,7 @@ from rest_framework.pagination import PageNumberPagination
 class DistrictListAPIView(generics.ListCreateAPIView):
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
-    permission_classes=[IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class DistrictDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -32,7 +33,8 @@ class DistrictDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class HotelFilter(filters.FilterSet):
-    district_name = filters.CharFilter(field_name='district__district_name', lookup_expr='icontains')
+    district_name = filters.CharFilter(
+        field_name='district__district_name', lookup_expr='icontains')
     name = filters.CharFilter(field_name='name', lookup_expr='icontains')
 
     class Meta:
@@ -40,11 +42,11 @@ class HotelFilter(filters.FilterSet):
         fields = ['district_name', 'name']
 
 
-
 class CustomPagination(PageNumberPagination):
-    page_size = 6  
+    page_size = 6
     page_size_query_param = 'page_size'
     max_page_size = 100
+
 
 class HotelListAPIView(generics.ListCreateAPIView):
     queryset = Hotel.objects.select_related('district').all()
@@ -52,23 +54,21 @@ class HotelListAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = HotelFilter
     permission_classes = [IsAdminOrReadOnly]
-    pagination_class = CustomPagination 
-    
+    pagination_class = CustomPagination
+
     def get_queryset(self):
         queryset = super().get_queryset()
         filtered_queryset = self.filter_queryset(queryset)
         if self.request.query_params:
             return filtered_queryset
         return queryset
-    
+
 
 class HotelDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    permission_classes=[IsAdminOrReadOnly]
-
-
+    permission_classes = [IsAdminOrReadOnly]
 
 
 def download_booking_pdf(request, booking_id):
@@ -91,11 +91,11 @@ def download_booking_pdf(request, booking_id):
     # booking details HTML template to
     html_string = render_to_string('booking_details.html', context)
 
-    # Create HTTP response with PDF 
+    # Create HTTP response with PDF
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename=Booking_Confirmation_{booking.id}.pdf'
 
-    # Generate PDF from HTML 
+    # Generate PDF from HTML
     pisa_status = pisa.CreatePDF(
         html_string, dest=response,
         link_callback=lambda uri, _: os.path.join(
@@ -142,15 +142,14 @@ class BookHotelView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 class AllBookingsListAPIView(generics.ListAPIView):
-    queryset = Booking.objects.all()
+    # queryset = Booking.objects.all()
+    queryset = Booking.objects.select_related('user', 'hotel').all()
     serializer_class = AllBookingSerializer
+    pagination_class = CustomPagination
     permission_classes = [IsAdminOrReadOnly]
 
 
-from .serializers import AllHotelSerializer
 class HotelNameListView(generics.ListAPIView):
     queryset = Hotel.objects.all()
     serializer_class = AllHotelSerializer
