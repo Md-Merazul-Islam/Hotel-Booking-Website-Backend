@@ -7,6 +7,7 @@ urlpatterns = [
     path('user/', include('account.urls')),
     path('hotel/', include('hotels.urls')),
     path('payment/', include('payment.urls')),
+    path('fb/', include('facebooks.urls')),
     
     # Django REST Framework built-in login and logout views
     path('api-auth/', include('rest_framework.urls')), 

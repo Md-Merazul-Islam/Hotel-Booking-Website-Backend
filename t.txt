@@ -51,7 +51,9 @@ Payment app:
 	Payment book: https://hotel-booking-website-backend.vercel.app/payment/payment-booking/
 	Success: https://hotel-booking-website-backend.vercel.app/payment/success/
 	Failed: https://hotel-booking-website-backend.vercel.app/payment/fail/
+	Failed: https://hotel-booking-website-backend.vercel.app/fb/facebook-login/
 	Cancle: https://hotel-booking-website-backend.vercel.app/payment/cancel/
+	
 
 
 
